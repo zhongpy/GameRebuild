@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "requirements": {
+    "nodeMajorMin": 18,
+    "creatorVersion": "3.8.8",
+    "javaMajor": 17,
+    "androidPlatform": "android-36",
+    "androidBuildTools": "36.0.0",
+    "androidNdk": "27.0.12077973",
+    "cmake": "3.22.1",
+    "pythonMin": "3.10"
+  },
+  "overrides": {
+    "conda": "",
+    "git": "",
+    "node": "",
+    "creator": "",
+    "wechatDevtools": "",
+    "androidStudio": "",
+    "androidSdk": "",
+    "javaHome": "",
+    "python": ""
+  }
+}

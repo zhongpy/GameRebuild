@@ -1,0 +1,15 @@
+# Independent repositories; keep only the workspace directory guide.
+/projects/*
+!/projects/README.md
+# Original game packages, local reference copies and runtime evidence.
+/resources/*
+!/resources/README.md
+/reference/
+/evidence/
+# Machine-specific configuration and generated environment report.
+/environment.local.json
+/docs/ENVIRONMENT.local.md
+/.local/
+/node_modules/
+.DS_Store
+Thumbs.db
