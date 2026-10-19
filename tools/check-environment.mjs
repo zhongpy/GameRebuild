@@ -49,6 +49,8 @@ export function isWeChatDevtoolsIdentity(info) {
 function wechatVersion(p) {
   if(!win)return fileVersion(p);
   try {
+    // DevTools keys its profile by the installation path, including path casing.
+    p=fs.realpathSync.native(p);
     const info=JSON.parse(powershell(`(Get-Item -LiteralPath ${psQuote(p)}).VersionInfo | Select-Object ProductVersion,ProductName,CompanyName | ConvertTo-Json -Compress`));
     const result={version:info.ProductVersion||null,productName:info.ProductName,companyName:info.CompanyName};
     // The Windows launcher has its own version (e.g. 1.03.0); prefer the actual IDE package.
@@ -57,7 +59,7 @@ function wechatVersion(p) {
       const app=json(appPackage);
       if(app.appname==='wechatwebdevtools'&&app.version){result.launcherVersion=result.version;result.version=app.version;}
     }
-    return {...result,isWeChatDevtools:isWeChatDevtoolsIdentity(result),cli:path.join(path.dirname(p),'cli.js')};
+    return {...result,path:p,isWeChatDevtools:isWeChatDevtoolsIdentity(result),cli:path.join(path.dirname(p),'cli.js')};
   } catch {return {version:null,isWeChatDevtools:false};}
 }
 function creatorVersion(p) {
