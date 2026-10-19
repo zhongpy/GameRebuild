@@ -42,6 +42,24 @@ function fileVersion(p) {
   if (!win) return { version: null };
   return { version: powershell(`(Get-Item -LiteralPath ${psQuote(p)}).VersionInfo.ProductVersion`) || null };
 }
+export function isWeChatDevtoolsIdentity(info) {
+  if(/alipay|支付宝/i.test(info.companyName||''))return false;
+  return /微信(?:web)?开发者工具|wechat.*devtools/i.test(info.productName||'');
+}
+function wechatVersion(p) {
+  if(!win)return fileVersion(p);
+  try {
+    const info=JSON.parse(powershell(`(Get-Item -LiteralPath ${psQuote(p)}).VersionInfo | Select-Object ProductVersion,ProductName,CompanyName | ConvertTo-Json -Compress`));
+    const result={version:info.ProductVersion||null,productName:info.ProductName,companyName:info.CompanyName};
+    // The Windows launcher has its own version (e.g. 1.03.0); prefer the actual IDE package.
+    const appPackage=path.join(path.dirname(p),'code/package.nw/package.json');
+    if(exists(appPackage)){
+      const app=json(appPackage);
+      if(app.appname==='wechatwebdevtools'&&app.version){result.launcherVersion=result.version;result.version=app.version;}
+    }
+    return {...result,isWeChatDevtools:isWeChatDevtoolsIdentity(result),cli:path.join(path.dirname(p),'cli.js')};
+  } catch {return {version:null,isWeChatDevtools:false};}
+}
 function creatorVersion(p) {
   const base = process.platform === 'darwin' ? path.resolve(path.dirname(p), '..') : path.dirname(p);
   const packageFile = path.join(base, 'resources', 'resources', '3d', 'engine', 'package.json');
@@ -92,7 +110,8 @@ function discover() {
   const creator = cocosRoots.flatMap(p => directories(p).map(v => path.join(v, win ? 'CocosCreator.exe' : process.platform === 'darwin' ? 'CocosCreator.app/Contents/MacOS/CocosCreator' : 'CocosCreator')));
   const sdk = unique([process.env.ANDROID_SDK_ROOT, process.env.ANDROID_HOME, path.join(home, 'AppData/Local/Android/Sdk'), path.join(home, 'Library/Android/sdk'), path.join(home, 'Android/Sdk'), ...drives.map(d => path.join(d, 'Android/Sdk'))]);
   const javaHome = unique([process.env.JAVA_HOME, ...drives.flatMap(d => directories(path.join(d, 'Android/Java'))), ...programRoots.flatMap(p => [...directories(path.join(p, 'Java')), ...directories(path.join(p, 'Microsoft')).filter(v => /jdk/i.test(v))]), ...directories('/Library/Java/JavaVirtualMachines').map(p => path.join(p, 'Contents/Home')), ...directories('/usr/lib/jvm')]);
-  const wechatDevtools = unique([...programRoots.flatMap(p => [path.join(p, '小程序开发者工具/小程序开发者工具.exe'), path.join(p, '微信web开发者工具/微信web开发者工具.exe'), path.join(p, 'Tencent/微信web开发者工具/微信web开发者工具.exe')]), '/Applications/wechatwebdevtools.app/Contents/MacOS/wechatwebdevtools']);
+  const wechatRegistry=registry.filter(r=>/微信.*开发者工具|wechat.*devtools/i.test(r.DisplayName||'')).map(r=>(r.DisplayIcon||'').replace(/,\d+$/,'').replace(/^"|"$/g,''));
+  const wechatDevtools = unique([...wechatRegistry,...programRoots.flatMap(p => ['微信web开发者工具','Tencent/微信web开发者工具'].flatMap(folder=>['微信开发者工具.exe','微信web开发者工具.exe','wechatdevtools.exe'].map(exe=>path.join(p,folder,exe)))), '/Applications/wechatwebdevtools.app/Contents/MacOS/wechatwebdevtools']);
   const studioRegistry = registry.filter(r => /Android Studio/.test(r.DisplayName)).map(r => (r.DisplayIcon || '').replace(/^"|"$/g, '').replace(/,\d+$/, ''));
   const androidStudio = unique([...studioRegistry.flatMap(p => [p, path.join(path.dirname(p), 'studio64.exe')]), ...programRoots.flatMap(p => ['studio64.exe','studio.exe'].map(n => path.join(p, 'Android/Android Studio/bin', n))), '/Applications/Android Studio.app/Contents/MacOS/studio', '/opt/android-studio/bin/studio.sh']);
   const condaRoots = unique([
@@ -131,11 +150,15 @@ export function inspectEnvironment(config, candidates = discover()) {
     checkTool('git', selectCandidate(o.git, onPath(win ? ['git.exe'] : ['git']), cli(['--version'], /git version (\S+)/)), 'available', () => true),
     checkTool('creator', selectCandidate(o.creator, candidates.creator, creatorVersion, x => x.version === r.creatorVersion), r.creatorVersion, v => v === r.creatorVersion),
     checkTool('javaHome', selectCandidate(o.javaHome, candidates.javaHome, javaVersion, x => versionMatches(x.version, String(r.javaMajor))), String(r.javaMajor), v => versionMatches(v, String(r.javaMajor))),
-    checkTool('wechatDevtools', selectCandidate(o.wechatDevtools, candidates.wechatDevtools, fileVersion), 'installed; Mini Game import requires manual validation', () => true),
+    checkTool('wechatDevtools', selectCandidate(o.wechatDevtools, candidates.wechatDevtools, wechatVersion,x=>x.isWeChatDevtools!==false), 'WeChat DevTools; Mini Game import requires runtime validation', () => true),
     checkTool('androidStudio', selectCandidate(o.androidStudio, candidates.androidStudio, fileVersion), 'installed (IDE optional for command-line builds)', () => true, false),
     checkTool('python', selectCandidate(o.python, [pythonExecutable], inspectPython), 'Conda Python 3.11 + PyYAML 6.x (extraction tools)', v => versionMatches(v,'3.11'), false),
   ];
   const python = tools.find(t => t.id === 'python');
+  const wechat=tools.find(t=>t.id==='wechatDevtools');
+  if(wechat.isWeChatDevtools===false&&exists(wechat.path)){
+    wechat.status='tool-mismatch';wechat.action='Selected executable is not verified as WeChat DevTools; set overrides.wechatDevtools to the Tencent WeChat developer tool';
+  }
   if (python.status === 'found' && (!python.condaManaged || !versionMatches(python.pyyaml,'6'))) python.status = 'version-mismatch';
   if (python.status !== 'found') python.action = 'Run node tools/setup-python.mjs (creates dedicated Conda environment from environment.yml)';
   const sdk = selectCandidate(o.androidSdk, candidates.sdk, () => ({ version: null }), x => exists(path.join(x.path, 'platforms')));

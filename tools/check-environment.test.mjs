@@ -4,7 +4,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { selectCandidate, versionMatches, sdkChecks, renderReport, validateConfig, condaProcessEnv } from './check-environment.mjs';
+import { selectCandidate, versionMatches, sdkChecks, renderReport, validateConfig, condaProcessEnv, isWeChatDevtoolsIdentity } from './check-environment.mjs';
+
+test('generic mini-program tools from Alipay are not WeChat developer tools',()=>{
+  assert.equal(isWeChatDevtoolsIdentity({productName:'小程序开发者工具',companyName:'Alipay.com Co., Ltd.'}),false);
+  assert.equal(isWeChatDevtoolsIdentity({productName:'微信开发者工具',companyName:'Tencent'}),true);
+  assert.equal(isWeChatDevtoolsIdentity({productName:'微信',companyName:'Tencent'}),false);
+  assert.equal(isWeChatDevtoolsIdentity({}),false);
+});
 
 test('Conda DLL paths apply only to the child process and preserve the existing PATH', () => {
   const original = {PATH:'original-tools',KEEP:'unchanged'};
