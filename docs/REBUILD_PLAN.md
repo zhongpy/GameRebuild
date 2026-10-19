@@ -13,6 +13,8 @@
 
 本次验证：环境脚本 7 项测试通过；四个技能通过官方 Python 校验器；资源移动后 146/223 项清单哈希分别通过；三个 Git 根目录独立；本机配置、原包及子仓内容的父仓忽略规则通过；11 个本地文档链接有效。专用 Conda Python 环境已创建，当前静态环境检查全部通过；实际版本和路径保存在不入库的环境报告中。
 
-初始试点仍暂定 Emergency Jam。其三端小场景、原版基线及源码重建计划在 projects/emergency-jam/docs/REBUILD_PLAN.md。Pegball 的计划在 projects/pegball-frvr/docs/REBUILD_PLAN.md。
+用户已指定 Emergency Jam 为首个重建项目。其原版基线、H5 工程和实际进度见 projects/emergency-jam/docs/REBUILD_PLAN.md。Pegball 的计划在 projects/pegball-frvr/docs/REBUILD_PLAN.md。
 
-新机器先生成本机环境配置，再分别克隆项目和放置资源。当前尚未执行 Cocos 素材导入、构建或真机验证。
+所有重建默认竖屏；横屏由用户额外说明。验证顺序为 H5 → 用户人工通过 → 微信小游戏 → Android。
+
+新机器先生成本机环境配置，再分别克隆项目和放置资源。Emergency Jam 已开始 Cocos 素材导入和 H5 构建；平台验收状态归项目维护，不能从 H5 结果推断其他端通过。
