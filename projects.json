@@ -3,6 +3,7 @@
   "repositoryMode": "independent-nested",
   "projects": [
     { "id": "emergency-jam", "path": "projects/emergency-jam", "remote": null, "resourcePackage": "resources/emergency-jam-extracted" },
-    { "id": "pegball-frvr", "path": "projects/pegball-frvr", "remote": null, "resourcePackage": "resources/pegball-frvr-extracted" }
+    { "id": "pegball-frvr", "path": "projects/pegball-frvr", "remote": null, "resourcePackage": "resources/pegball-frvr-extracted" },
+    { "id": "fortress-merge", "path": "projects/fortress-merge", "remote": null, "resourcePackage": "resources/fortress-merge-extracted" }
   ]
 }

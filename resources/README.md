@@ -2,6 +2,6 @@
 
 资源包按原提取目录完整放在这里，保持内部文件、相对路径和校验清单不变。本目录下只有本说明入库。
 
-当前约定目录：`emergency-jam-extracted/`、`pegball-frvr-extracted/`。各包从 README 和 DATA_GUIDE 开始阅读，执行清单核验后再使用。
+当前约定目录：`emergency-jam-extracted/`、`pegball-frvr-extracted/`、`fortress-merge-extracted/`。各包从 README 和 DATA_GUIDE（含语言后缀版本）开始阅读，执行清单核验后再使用。
 
 目录搬迁不等于内容修改；原包始终作为证据保留，适配和转换另写到参考副本或项目目录。新机器需自行取得并放置这些资源包，不能从工作区 Git 克隆获得。

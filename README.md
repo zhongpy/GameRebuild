@@ -15,6 +15,7 @@ GameRebuild/                       工作区 Git 仓库
   projects/
     emergency-jam/                独立 Git 仓库
     pegball-frvr/                 独立 Git 仓库
+    fortress-merge/              独立 Git 仓库（评估与参考工具）
   resources/                      原始提取包，不入库
   reference/                      本地参考运行副本，不入库
   evidence/                       本机运行证据，不入库
