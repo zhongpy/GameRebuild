@@ -15,7 +15,7 @@ GameRebuild/                       工作区 Git 仓库
   projects/
     emergency-jam/                独立 Git 仓库
     pegball-frvr/                 独立 Git 仓库
-    fortress-merge/              独立 Git 仓库（评估与参考工具）
+    fortress-merge/                独立 Git 仓库
   resources/                      原始提取包，不入库
   reference/                      本地参考运行副本，不入库
   evidence/                       本机运行证据，不入库
@@ -53,6 +53,8 @@ GameRebuild/                       工作区 Git 仓库
 ## 通用文档与验证
 
 - [Cocos 工作规范](docs/COCOS_WORKFLOW.md)
+- [Unity 游戏包重建规范](docs/UNITY_REBUILD_WORKFLOW.md)：代码/资源分析、证据记录与 agent 任务模板
+- [Unity 原包重建 skill](.agents/skills/unity-package-rebuild/SKILL.md)
 - [技术评估入口](docs/COCOS_ASSESSMENT.md)
 - [工作区推进计划](docs/REBUILD_PLAN.md)
 - 检查脚本测试：`node --test tools/check-environment.test.mjs`

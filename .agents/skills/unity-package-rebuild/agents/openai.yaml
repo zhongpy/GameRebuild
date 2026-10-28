@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity 原包重建"
+  short_description: "从 Unity 发布包追溯代码、配置与资源结构，按原版证据重建并校验行为"
+  default_prompt: "使用 $unity-package-rebuild，从当前 Unity 原包定位相关资源和业务方法证据，再完成本轮重建或还原度修正并报告未知项。"

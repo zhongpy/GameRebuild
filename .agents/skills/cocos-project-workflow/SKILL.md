@@ -11,6 +11,7 @@ description: "建立或修改本工作区的 Cocos Creator 重建工程，处理
 从工作区根目录阅读 AGENTS.md、docs/REBUILD_PLAN.md、docs/COCOS_WORKFLOW.md；环境和已知迁移风险见 docs/COCOS_ASSESSMENT.md。Creator 版本以项目配置为准，目标 H5、微信小游戏、Android。
 
 - 先确认任务是环境验证、资产迁移、玩法实现还是平台构建，只执行相关步骤。资产转换依据原清单，结果写到重建工程并保存来源。
+- Unity 源包的玩法/画面还原先使用 [unity-package-rebuild](../unity-package-rebuild/SKILL.md)，取得相关方法、配置和结构证据后再移植；不能用截图布局或经验公式代替可恢复的原始结构与逻辑。仅构建或无关修改不重新逆向。
 - 默认竖屏，横屏仅在用户明确要求时采用。当前阶段只验证 H5；获得用户人工验收通过后再验证微信小游戏，最后 Android。
 - 建工程采用真实同版模板/编辑器，验证能打开和导入；已有工程先核对版本、配置和 UUID，不重新初始化覆盖。
 - core 保持纯 TypeScript；Cocos 组件与平台 SDK 经边界接口连接。不要因浏览器可运行而引入 DOM 依赖到三端共用代码。
